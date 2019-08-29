@@ -1,0 +1,56 @@
+---
+
+- name: Ensure provisioner tool is copied
+  template: src=provision.py
+            dest=/root/provision.py
+            mode=0755
+
+- name: Ensure apply tool is copied
+  template: src=applywg.sh
+    dest=/root/applywg.sh
+    mode=0755
+
+- name: Ensure SSH host public key is publicly accessible
+  file:
+    path: /etc/ssh/ssh_host_ecdsa_key.pub
+    mode: '0644'
+
+- name: Ensure wgpt is created
+  user:
+    name: wgpt
+    comment: Wiregard Provisioning Tool
+    create_home: true
+    home: /home/wgpt
+
+- name: Allow wgpt to be root
+  template:
+    src: wgpt.sudo
+    dest: /etc/sudoers.d/wgpt
+    mode: '0440'
+
+- name: Pull client data from configuration server
+  command: /root/provision.py "{{ join_token }}" "{{ wgpt_server }}" "{{ wgpt_port }}"
+  become_method: sudo
+  become_user: root
+
+- name: Bring up wireguard interface
+  template:
+    src: wireguard.service
+    dest: /etc/systemd/system/wireguard.service
+    mode: '0644'
+  register: wireguard
+
+- name: Reload systemd config
+  systemd:
+    daemon_reload: yes
+  when: wireguard.changed
+
+- name: Enable Wireguard service
+  systemd:
+    name: wireguard
+    enabled: yes
+
+- name: Apply wireguard configurations
+  command: /root/applywg.sh
+  become_method: sudo
+  become_user: root

@@ -1,0 +1,47 @@
+---
+
+- name: Add the WireGuard PPA
+  apt_repository:
+    repo: 'ppa:wireguard/wireguard'
+
+- name: Install the WireGuard packages
+  apt:
+    package:
+      - wireguard-dkms
+      - wireguard-tools
+
+# Set ip forwarding on in /proc and verify token value with the sysctl command
+- sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: yes
+    state: present
+
+- sysctl:
+    name: net.ipv6.conf.default.forwarding
+    value: "1"
+    sysctl_set: yes
+    state: present
+
+- sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: "1"
+    sysctl_set: yes
+    state: present
+
+- name: Install firewall IPv4 rules
+  template: src=rules.v4.j2
+    dest=/etc/iptables/rules.v4
+    mode=0644
+  register: fw4
+
+- name: Install firewall IPv6 rules
+  template: src=rules.v6.j2
+    dest=/etc/iptables/rules.v6
+    mode=0644
+  register: fw6
+
+- name: Apply firewall rules
+  service: name=netfilter-persistent state=restarted
+  sudo: true
+  when: fw4.changed or fw6.changed

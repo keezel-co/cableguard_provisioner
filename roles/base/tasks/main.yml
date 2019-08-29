@@ -1,0 +1,21 @@
+---
+
+- name: Update all packages to the latest version
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Ensure aptitude is installed
+  apt:
+    package:
+      - aptitude
+
+- name: Ensure required packages are installed
+  apt:
+    package:
+      - ntp
+      - htop
+      - python3
+      - python3-requests
+      - python3-cryptography
+      - iptables-persistent

@@ -1,0 +1,9 @@
+---
+
+- name: Upgrade system packages safely
+  apt: upgrade="yes" update_cache="yes" autoremove="yes"
+  tags: sysupgrade
+
+- name: Upgrade system packages fully
+  apt: upgrade="dist" update_cache="yes" autoremove="yes"
+  tags: fullupgrade

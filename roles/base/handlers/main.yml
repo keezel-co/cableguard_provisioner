@@ -1,0 +1,7 @@
+---
+- name: Reload sysctl
+  command: sysctl -p
+
+- name: restart zabbix
+  command: /bin/systemctl restart zabbix-agent
+
