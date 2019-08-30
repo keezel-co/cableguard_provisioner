@@ -1,15 +1,19 @@
-Wireguard Provisioning Tool
+Cableguard Provisioner      
 ===========================
+
+This Ansible script will install Wireguard on a server and register that server with the Cableguard API for automatic provisioning.
 
 Requirements
 ------------
 
 Ansible >= 2.8
+Cableguard API instance
+Server token from Cableguard API
 
 New server installer
 --------------------
 
-This script will help you to provision a new server to do that you havce simply to type use the environment variables
+This script will help you to provision a new server. To do that you simply add your server to your Cableguard API instance, get the `server_token` after registration and use them as parameters when executing the script:
 
 ```
 Usage: ./deploy.sh <params> where params can be:
