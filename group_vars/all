@@ -1,7 +1,7 @@
 ---
 
 join_token: "{{ lookup('env', 'JOIN_TOKEN') }}"
-wgpt_server: "{{ lookup('env', 'CABLEGUARD_SERVER') }}"
-wgpt_port: "{{ lookup('env', 'CABLEGUARD_PORT') }}"
+wgpt_server: "{{ lookup('env', 'PORTUNUS_SERVER') }}"
+wgpt_port: "{{ lookup('env', 'PORTUNUS_PORT') }}"
 wg_target: "{{ lookup('env', 'WIREGUARD_TARGET') }}"
 
